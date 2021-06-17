@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item
+        android:id="@+id/phoneFragment"
+        android:enabled="true"
+        android:icon="@drawable/ic_phone"
+        android:title="" />
+
+    <item
+        android:id="@+id/cameraFragment"
+        android:enabled="true"
+        android:icon="@drawable/ic_camera"
+        android:title="" />
+
+    <item
+        android:id="@+id/messageFragment"
+        android:enabled="true"
+        android:icon="@drawable/ic_message"
+        android:title="" />
+
+    <item
+        android:id="@+id/userFragment"
+        android:enabled="true"
+        android:icon="@drawable/ic_user"
+        android:title="" />
+</menu>
