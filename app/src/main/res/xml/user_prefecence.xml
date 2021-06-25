@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <PreferenceCategory android:title="Tùy chọn">
+        <SwitchPreference
+            android:defaultValue="true"
+            android:key="preState"
+            android:title="Trạng thái hoạt động"
+            android:summaryOn="Trạng thái hoạt động của bạn đang bật"
+            android:summaryOff="Trạng thái hoạt động của bạn đã tắt"/>
+
+        <RingtonePreference
+            android:key="Ringtone"
+            android:title="Âm thanh thông báo"
+            android:showDefault="true"
+            android:showSilent="true"></RingtonePreference>
+    </PreferenceCategory>
+
+    <PreferenceCategory android:title="Người dùng">
+        <EditTextPreference
+            android:key="preUsername"
+            android:title="Tên người dùng"
+            android:dialogTitle="Thay đổi tên người dùng"
+            android:summary="UserName"></EditTextPreference>
+
+        <EditTextPreference
+            android:key="prePassword"
+            android:title="Mật khẩu"
+            android:dialogTitle="Thay đổi mật khẩu"
+            android:inputType="textPassword"></EditTextPreference>
+
+        <EditTextPreference
+            android:key="preBirthday"
+            android:title="Ngày sinh"
+            android:inputType="datetime"
+            ></EditTextPreference>
+
+        <EditTextPreference
+            android:key="preEmail"
+            android:title="Địa chỉ email"
+            android:dialogTitle="Thay đổi địa chỉ email"
+            android:summary="usename@email.com"></EditTextPreference>
+    </PreferenceCategory>
+</PreferenceScreen>
