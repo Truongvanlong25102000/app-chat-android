@@ -1,14 +1,28 @@
 package com.example.messenger;
 
+import android.app.Activity;
+import android.content.Intent;
+import android.content.SharedPreferences;
+import android.net.Uri;
 import android.os.Bundle;
 
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentActivity;
 
+import android.preference.Preference;
+import android.preference.PreferenceFragment;
+import android.preference.PreferenceManager;
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
+import android.widget.PopupMenu;
 import android.widget.TextView;
+
+import java.net.URI;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -25,6 +39,13 @@ public class UserFragment extends Fragment {
     // TODO: Rename and change types of parameters
     private String mParam1;
     private String mParam2;
+
+    TextView txtUsername;
+    ImageView imgAvatar;
+    Uri imageUri;
+    /* IMAGE_CODE là một giá trị int dùng để định danh mỗi request.
+     Khi nhận được kết quả, hàm callback sẽ trả về cùng IMAGE_CODE này để ta có thể xác định và xử lý kết quả. */
+    public static final int IMAGE_CODE=1;
 
     public UserFragment() {
         // Required empty public constructor
@@ -57,14 +78,53 @@ public class UserFragment extends Fragment {
         }
 
     }
-    TextView txtUsername;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_user, container, false);
+        View view = inflater.inflate(R.layout.fragment_user, container, false);
+        txtUsername = (TextView) view.findViewById(R.id.txtUsername);
+        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getActivity().getApplicationContext());
+        String Username = sharedPreferences.getString("preUsername", "");
+        txtUsername.setText(Username);
+        imgAvatar = (ImageView) view.findViewById(R.id.imgAvatar);
+        imgAvatar.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                PopupMenu popupMenu = new PopupMenu(getActivity(), imgAvatar);
+                popupMenu.getMenuInflater().inflate(R.menu.avatar_menu, popupMenu.getMenu());
+                popupMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
+                    @Override
+                    public boolean onMenuItemClick(MenuItem item) {
+                        if(item.getItemId()==R.id.chupAvatar){
 
+                        }else if(item.getItemId()==R.id.chonAvatar){
+                            chonAnh();
+                        }
+                        return false;
+                    }
+                });
+                popupMenu.show();
+            }
+        });
+
+        return view;
     }
 
+    private void chonAnh() {
+        Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
+        intent.setType("image/*");
+        startActivityForResult(intent, IMAGE_CODE);
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, @Nullable @org.jetbrains.annotations.Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode==IMAGE_CODE && resultCode== Activity.RESULT_OK && data!=null && data.getData()!=null){
+            imageUri = data.getData();
+            imgAvatar.setImageURI(imageUri);
+        }
+    }
 }
+

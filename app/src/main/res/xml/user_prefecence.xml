@@ -13,7 +13,7 @@
             android:key="Ringtone"
             android:title="Âm thanh thông báo"
             android:showDefault="true"
-            android:showSilent="true"></RingtonePreference>
+            android:showSilent="true"/>
     </PreferenceCategory>
 
     <PreferenceCategory android:title="Người dùng">
@@ -21,24 +21,23 @@
             android:key="preUsername"
             android:title="Tên người dùng"
             android:dialogTitle="Thay đổi tên người dùng"
-            android:summary="UserName"></EditTextPreference>
+            android:defaultValue="UserName"
+            android:summary="UserName"/>
 
         <EditTextPreference
             android:key="prePassword"
             android:title="Mật khẩu"
             android:dialogTitle="Thay đổi mật khẩu"
-            android:inputType="textPassword"></EditTextPreference>
+            android:inputType="textPassword"/>
 
-        <EditTextPreference
+        <Preference
             android:key="preBirthday"
-            android:title="Ngày sinh"
-            android:inputType="datetime"
-            ></EditTextPreference>
+            android:title="Ngày sinh"/>
 
         <EditTextPreference
             android:key="preEmail"
             android:title="Địa chỉ email"
             android:dialogTitle="Thay đổi địa chỉ email"
-            android:summary="usename@email.com"></EditTextPreference>
+            android:summary="usename@email.com"/>
     </PreferenceCategory>
 </PreferenceScreen>
