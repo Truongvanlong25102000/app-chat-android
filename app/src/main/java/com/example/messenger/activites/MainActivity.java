@@ -1,14 +1,13 @@
-package com.example.messenger.ui;
+package com.example.messenger.activites;
 
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentContainerView;
 import androidx.navigation.NavController;
 import androidx.navigation.fragment.NavHostFragment;
 import androidx.navigation.ui.NavigationUI;
 
+import android.content.res.ColorStateList;
+import android.graphics.Color;
 import android.os.Bundle;
-import android.view.View;
 
 import com.example.messenger.R;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
