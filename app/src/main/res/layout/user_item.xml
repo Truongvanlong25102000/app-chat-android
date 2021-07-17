@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/userRootItem"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content">
+
+    <com.google.android.material.imageview.ShapeableImageView
+        android:id="@+id/message_item_row_img_user"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:background="@drawable/no_avatar"
+        android:scaleType="fitXY"
+        app:shapeAppearanceOverlay="@style/image_view_circle" />
+
+    <com.google.android.material.imageview.ShapeableImageView
+        android:id="@+id/message_item_row_img_online"
+        android:layout_width="14dp"
+        android:layout_height="14dp"
+        android:layout_marginLeft="36dp"
+        android:layout_marginTop="34dp"
+        android:layout_marginBottom="2dp"
+        android:backgroundTint="@color/bg_online"
+        android:scaleType="fitXY"
+        android:tint="@color/bg_online"
+        app:shapeAppearanceOverlay="@style/image_view_circle_width_border"
+        app:srcCompat="@color/bg_online" />
+
+    <TextView
+        android:id="@+id/user_item_txt_name"
+        android:layout_width="50dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="60dp"
+        android:gravity="center"
+        android:maxLines="2"
+        android:text="Janet Fowler"
+        android:textColor="@android:color/white"
+        android:textSize="14sp"
+        android:visibility="gone" />
+</FrameLayout>

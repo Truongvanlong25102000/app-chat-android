@@ -1,4 +1,4 @@
-package com.example.messenger;
+package com.example.messenger.fragments;
 
 import android.app.Activity;
 import android.content.Intent;
@@ -23,6 +23,8 @@ import android.widget.PopupMenu;
 import android.widget.TextView;
 
 import java.net.URI;
+
+import com.example.messenger.R;
 
 /**
  * A simple {@link Fragment} subclass.
