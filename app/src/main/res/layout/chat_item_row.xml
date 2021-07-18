@@ -6,10 +6,6 @@
     android:layout_height="wrap_content"
     android:padding="16dp">
 
-    <View
-        android:layout_width="10000dp"
-        android:layout_height="2dp" />
-
     <LinearLayout
         android:id="@+id/base_layout_content"
         android:layout_width="match_parent"

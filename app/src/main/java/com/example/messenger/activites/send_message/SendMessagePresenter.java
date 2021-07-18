@@ -10,23 +10,15 @@ import com.example.messenger.helpers.databases.FireBaseController;
 import com.example.messenger.helpers.databases.FireBaseTableKey;
 import com.example.messenger.models.AccountResponse;
 import com.example.messenger.models.ChatResponse;
+import com.example.messenger.models.MessageResponse;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ServerValue;
-import com.google.firebase.database.ValueEventListener;
 
-import org.jetbrains.annotations.NotNull;
-
-import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
-import java.util.UUID;
 
 public class SendMessagePresenter implements SendMessageContract.presenter {
     private SendMessageContract.view mView;
@@ -63,13 +55,14 @@ public class SendMessagePresenter implements SendMessageContract.presenter {
             @Override
             public void retrieveSuccess(DataSnapshot data) {
                 if (!data.exists()) {
-                    mView.getHistoryChatSuccess(chatResponses, path);
+                    mView.getHistoryChatSuccess(chatResponses);
                 } else if (data.getValue() instanceof Map) {
+                    chatResponses.clear();
                     for (DataSnapshot dataSnapshot : data.getChildren()) {
                         ChatResponse chatResponse = dataSnapshot.getValue(ChatResponse.class);
                         chatResponses.add(chatResponse);
                     }
-                    mView.getHistoryChatSuccess(chatResponses, path);
+                    mView.getHistoryChatSuccess(chatResponses);
                 }
             }
 
@@ -82,34 +75,22 @@ public class SendMessagePresenter implements SendMessageContract.presenter {
 
     @Override
     public void sendMessage(String content, String idSender, String idReceiver) {
-        String path = FireBaseTableKey.CHAT_KEY + idSender + "_" + idReceiver + "/" + (new Date().getTime());
+        String pathSender = FireBaseTableKey.CHAT_KEY + idSender + "/" + idReceiver + "/" + (new Date().getTime());
+        String pathReceiver = FireBaseTableKey.CHAT_KEY + idReceiver + "/" + idSender + "/" + (new Date().getTime());
 
         String last_at = df.format(new Date());
         ChatResponse chatResponse = new ChatResponse(content, null, idReceiver, idSender, last_at);
-        FireBaseController.getInstance().pushData(path, chatResponse);
+        FireBaseController.getInstance().pushData(pathSender, chatResponse);
+        FireBaseController.getInstance().pushData(pathReceiver, chatResponse);
+
+        String pathMessageLast1 = FireBaseTableKey.MESSAGE_KEY + idSender + "/" + idReceiver;
+        String pathMessageLast2 = FireBaseTableKey.MESSAGE_KEY + idReceiver + "/" + idSender;
+
+//        String id, String id_sender, String content, String file, String last_at, Boolean is_read
+        MessageResponse messageResponse1 = new MessageResponse(null, idSender, content, null, last_at, true);
+        MessageResponse messageResponse2 = new MessageResponse(null, idSender, content, null, last_at, false);
+        FireBaseController.getInstance().pushData(pathMessageLast1, messageResponse1);
+        FireBaseController.getInstance().pushData(pathMessageLast2, messageResponse2);
     }
-
-    @Override
-    public void checkDataIsExist(String node) {
-        FireBaseController.getInstance().getData(node, new FireBaseController.RetrieveCallBack() {
-            @Override
-            public void retrieveSuccess(DataSnapshot data) {
-//                if (data.exists()) {
-//                    for (DataSnapshot dataSnapshot : data.getChildren()) {
-//                        ChatResponse chatResponse = dataSnapshot.getValue(ChatResponse.class);
-//                        chatResponses.add(chatResponse);
-//                    }
-//                    mView.dataIsExist(node, chatResponses);
-//                } else {
-//
-//                }
-            }
-
-            @Override
-            public void retrieveFail(DatabaseError error) {
-            }
-        });
-    }
-
 
 }

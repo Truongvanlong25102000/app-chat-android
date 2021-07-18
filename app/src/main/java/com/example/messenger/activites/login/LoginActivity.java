@@ -13,6 +13,8 @@ import android.widget.Toast;
 import com.example.messenger.R;
 import com.example.messenger.activites.MainActivity;
 import com.example.messenger.activites.sigin.SignInActivity;
+import com.example.messenger.helpers.commons.SharedPreferencesHelper;
+import com.example.messenger.helpers.commons.SharedPreferencesKeys;
 import com.example.messenger.helpers.databases.FireBaseController;
 import com.example.messenger.helpers.databases.FireBaseTableKey;
 import com.example.messenger.models.AccountResponse;
@@ -69,14 +71,17 @@ public class LoginActivity extends AppCompatActivity {
 //                }
 //            });
 
-            firebaseAuth.signInWithEmailAndPassword(userName,passWord).addOnCompleteListener(LoginActivity.this, new OnCompleteListener<AuthResult>() {
+            firebaseAuth.signInWithEmailAndPassword(userName, passWord).addOnCompleteListener(LoginActivity.this, new OnCompleteListener<AuthResult>() {
                 @Override
                 public void onComplete(@NonNull @NotNull Task<AuthResult> task) {
                     if (!task.isSuccessful()) {
                         Toast.makeText(LoginActivity.this, "Error", Toast.LENGTH_LONG).show();
                     } else {
-                        String userName = edtUserName.getText().toString().trim().replace(".","_");
+                        String userName = edtUserName.getText().toString().trim().replace(".", "_");
                         FirebaseDatabase.getInstance().getReference("Account").child(userName).child("password").setValue(passWord);
+                        FirebaseDatabase.getInstance().getReference("Account").child(userName).child("state").setValue(1);
+                        SharedPreferencesHelper.INSTANCE.put(SharedPreferencesKeys.ID_ACCOUNT, userName);
+                        SharedPreferencesHelper.INSTANCE.put(SharedPreferencesKeys.PASS_WORD_ACCOUNT, passWord);
                         Intent intent = new Intent(LoginActivity.this, MainActivity.class);
                         startActivity(intent);
                         finish();

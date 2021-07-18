@@ -57,6 +57,7 @@ public class OnlineAdapter extends RecyclerView.Adapter<OnlineAdapter.ViewHolder
         } else {
             holder.message_item_row_img_online.setVisibility(View.VISIBLE);
         }
+        holder.txtName.setText(accountResponses.get(position).getDisplay_name());
     }
 
     @Override

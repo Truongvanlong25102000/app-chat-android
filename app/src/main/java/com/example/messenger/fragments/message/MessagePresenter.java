@@ -28,10 +28,13 @@ public class MessagePresenter implements MessageContract.Presenter {
         FireBaseController.getInstance().getData(path, new FireBaseController.RetrieveCallBack() {
             @Override
             public void retrieveSuccess(DataSnapshot data) {
-                if (data.getValue() instanceof Map) {
+                if (data.exists()) {
                     me = data.getValue(AccountResponse.class);
                     me.setId(data.getKey());
                     getFriend();
+                }
+                if (data.getValue() instanceof Map) {
+
                 } else if (data.getValue() instanceof AccountResponse) {
 //                    me = data.getValue(AccountResponse.class);
 //                    me.setId(data.getKey());
@@ -46,22 +49,27 @@ public class MessagePresenter implements MessageContract.Presenter {
     }
 
     private void getFriend() {
-        ArrayList<String> friendIds=new ArrayList<>();
-        for(Map.Entry<String,String> map:me.getFriend().entrySet()){
+        ArrayList<String> friendIds = new ArrayList<>();
+        if (me == null || me.getFriend() == null) {
+            mView.getAccountFriendSuccess(new ArrayList<>());
+            return;
+        }
+
+        for (Map.Entry<String, String> map : me.getFriend().entrySet()) {
             friendIds.add(map.getValue());
         }
 
-        for(int i=0;i<friendIds.size();i++){
+        for (int i = 0; i < friendIds.size(); i++) {
             FireBaseController.getInstance().getData(FireBaseTableKey.ACCOUNT_KEY + friendIds.get(i), new FireBaseController.RetrieveCallBack() {
                 @Override
                 public void retrieveSuccess(DataSnapshot data) {
                     if (data.getValue() instanceof Map) {
-                        AccountResponse accountResponse=data.getValue(AccountResponse.class);
+                        AccountResponse accountResponse = data.getValue(AccountResponse.class);
                         accountResponse.setId(data.getKey());
 
                         accountResponses.add(accountResponse);
 
-                        if(accountResponses.size()==friendIds.size()){
+                        if (accountResponses.size() == friendIds.size()) {
                             mView.getAccountFriendSuccess(accountResponses);
                         }
                     }
@@ -82,6 +90,7 @@ public class MessagePresenter implements MessageContract.Presenter {
             public void retrieveSuccess(DataSnapshot data) {
                 if (data.getValue() instanceof Map) {
                     MessageResponse messageResponse;
+                    messageResponses.clear();
                     for (DataSnapshot dataSnapshot : data.getChildren()) {
                         messageResponse = dataSnapshot.getValue(MessageResponse.class);
                         messageResponse.setId(dataSnapshot.getKey());
