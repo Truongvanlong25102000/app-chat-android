@@ -21,4 +21,10 @@
     <style name="image_view_circle_width_border">
         <item name="cornerSize">7dp</item>
     </style>
+
+    <style name="image_view_close">
+        <item name="cornerSize">15dp</item>
+        <item name="backgroundColor">@android:color/white</item>
+        <item name="backgroundTint">@android:color/white</item>
+    </style>
 </resources>

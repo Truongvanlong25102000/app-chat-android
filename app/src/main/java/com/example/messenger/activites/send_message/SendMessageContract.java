@@ -15,7 +15,7 @@ public class SendMessageContract {
 
         void getHistoryChatFail();
 
-        void sendMessageSuccess();
+        void sendMessageSuccess(String idSender, String idReceiver,String idChat);
 
         void sendMessageFail();
     }
@@ -25,7 +25,7 @@ public class SendMessageContract {
 
         void getHistoryChat(String path);
 
-        void sendMessage(String content, String idSender, String idReceiver);
+        void sendMessage(String content, String idSender, String idReceiver,String idChat);
 
     }
 }
