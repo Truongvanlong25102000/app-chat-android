@@ -14,5 +14,7 @@
     <color name="bg_bottom_nav">#1F1F1F</color>
     <color name="bg_fragment">#000000</color>
     <color name="bg_online">#0FDB66</color>
+    <color name="bg_input">#2B2B2B</color>
+    <color name="bg_is_sender">#007EF4</color>
 
 </resources>

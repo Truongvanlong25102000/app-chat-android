@@ -12,7 +12,9 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.bumptech.glide.Glide;
 import com.example.messenger.R;
+import com.example.messenger.components.ItemClickHandler;
 import com.example.messenger.models.AccountResponse;
 import com.google.android.material.imageview.ShapeableImageView;
 
@@ -23,10 +25,12 @@ import java.util.ArrayList;
 public class OnlineAdapter extends RecyclerView.Adapter<OnlineAdapter.ViewHolder> {
     private Context context;
     private ArrayList<AccountResponse> accountResponses;
+    private ItemClickHandler itemClickHandler;
 
-    public OnlineAdapter(Context context, ArrayList<AccountResponse> accountResponses) {
+    public OnlineAdapter(Context context, ArrayList<AccountResponse> accountResponses, ItemClickHandler itemClickHandler) {
         this.context = context;
         this.accountResponses = accountResponses;
+        this.itemClickHandler = itemClickHandler;
     }
 
     @NonNull
@@ -41,6 +45,18 @@ public class OnlineAdapter extends RecyclerView.Adapter<OnlineAdapter.ViewHolder
     @Override
     public void onBindViewHolder(@NonNull @NotNull ViewHolder holder, int position) {
         holder.txtName.setVisibility(View.VISIBLE);
+        holder.userRootItem.setOnClickListener(v -> {
+            itemClickHandler.itemClick(position);
+        });
+
+        if (accountResponses.get(position).getThumbnail() != null) {
+            Glide.with(context).load(accountResponses.get(position).getThumbnail()).placeholder(R.drawable.avatar).into(holder.imgUser);
+        }
+        if (accountResponses.get(position).getState() == 0) {
+            holder.message_item_row_img_online.setVisibility(View.GONE);
+        } else {
+            holder.message_item_row_img_online.setVisibility(View.VISIBLE);
+        }
     }
 
     @Override
@@ -50,15 +66,15 @@ public class OnlineAdapter extends RecyclerView.Adapter<OnlineAdapter.ViewHolder
 
     class ViewHolder extends RecyclerView.ViewHolder {
         private TextView txtName;
-        private ShapeableImageView imgUser,message_item_row_img_online;
+        private ShapeableImageView imgUser, message_item_row_img_online;
         private FrameLayout userRootItem;
 
         public ViewHolder(@NonNull @NotNull View itemView) {
             super(itemView);
-            txtName=itemView.findViewById(R.id.user_item_txt_name);
-            imgUser=itemView.findViewById(R.id.message_item_row_img_user);
-            message_item_row_img_online=itemView.findViewById(R.id.message_item_row_img_online);
-            userRootItem=itemView.findViewById(R.id.userRootItem);
+            txtName = itemView.findViewById(R.id.user_item_txt_name);
+            imgUser = itemView.findViewById(R.id.message_item_row_img_user);
+            message_item_row_img_online = itemView.findViewById(R.id.message_item_row_img_online);
+            userRootItem = itemView.findViewById(R.id.userRootItem);
         }
     }
 }

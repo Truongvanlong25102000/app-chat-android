@@ -3,14 +3,11 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:layout_marginBottom="50dp"
-    tools:context=".fragments.message.MessageFragment">
+    android:background="@android:color/transparent"
+    tools:context=".fragments.SendMessageFragment">
 
     <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/fragment_message_recycler"
+        android:id="@+id/fragment_send_message_recycler_view"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        tools:itemCount="10"
-        tools:listitem="@layout/message_item_row" />
-
+        android:layout_height="match_parent"/>
 </FrameLayout>

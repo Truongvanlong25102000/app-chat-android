@@ -1,10 +1,11 @@
 package com.example.messenger.components.adapters;
 
 import android.content.Context;
+import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.FrameLayout;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -13,23 +14,38 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.example.messenger.R;
+import com.example.messenger.activites.send_message.SendMessageActivity;
+import com.example.messenger.components.ItemClickHandler;
+import com.example.messenger.helpers.commons.SharedPreferencesHelper;
+import com.example.messenger.helpers.commons.SharedPreferencesKeys;
+import com.example.messenger.helpers.databases.FireBaseController;
+import com.example.messenger.helpers.databases.FireBaseTableKey;
 import com.example.messenger.models.AccountResponse;
 import com.example.messenger.models.MessageResponse;
 import com.google.android.material.imageview.ShapeableImageView;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.FirebaseDatabase;
 
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
+import java.util.Map;
 
 public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.ViewHolder> {
     private Context context;
     private ArrayList<MessageResponse> messageResponses;
     private ArrayList<AccountResponse> accountResponses;
+    private ItemClickHandler itemClickHandler;
+    private OnlineAdapter onlineAdapter;
+    private ArrayList<AccountResponse> friendChats = new ArrayList<>();
 
-    public MessageAdapter(Context context, ArrayList<MessageResponse> messageResponses, ArrayList<AccountResponse> accountResponses) {
+    public MessageAdapter(Context context, ArrayList<MessageResponse> messageResponses, ArrayList<AccountResponse> accountResponses, ItemClickHandler itemClickHandler, ArrayList<AccountResponse> friendChats) {
         this.context = context;
         this.messageResponses = messageResponses;
         this.accountResponses = accountResponses;
+        this.itemClickHandler = itemClickHandler;
+        this.friendChats = friendChats;
     }
 
     @NonNull
@@ -48,7 +64,22 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.ViewHold
         if (holder instanceof ViewHolderOnline) {
 
         } else {
-            Glide.with(context).load("https://afamilycdn.com/150157425591193600/2021/2/17/4-nguoi-ton-ngo-khong-so-nhat-trong-tay-du-ky-gom-nhung-ai1-aeub-1613533973120733625078.jpg").into(holder.imgUser);
+            holder.rootLayout.setOnClickListener(v -> {
+                itemClickHandler.itemClick(position - 1);
+            });
+
+            holder.txtNameUser.setText(messageResponses.get(position - 1).getId_sender());
+            holder.txtContent.setText(messageResponses.get(position - 1).getContent());
+//            if (friendChats.get(position-1).getState() == 0) {
+//                holder.message_item_row_img_online.setVisibility(View.GONE);
+//            } else {
+//                holder.message_item_row_img_online.setVisibility(View.VISIBLE);
+//            }
+//
+//            if (friendChats.get(position-1).getThumbnail() != null) {
+//                Glide.with(context).load(friendChats.get(position-1).getThumbnail()).placeholder(R.drawable.avatar).into(holder.imgUser);
+//            }
+
         }
     }
 
@@ -67,21 +98,28 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.ViewHold
     }
 
     class ViewHolder extends RecyclerView.ViewHolder {
-        private ShapeableImageView imgUser;
+        private ShapeableImageView imgUser, message_item_row_img_online;
         private TextView txtNameUser;
         private TextView txtContent;
+        private LinearLayout rootLayout;
 
         public ViewHolder(@NonNull @NotNull View itemView) {
             super(itemView);
             imgUser = itemView.findViewById(R.id.message_item_row_img_user);
+            message_item_row_img_online = itemView.findViewById(R.id.message_item_row_img_online);
             txtContent = itemView.findViewById(R.id.message_item_row_txt_content);
             txtNameUser = itemView.findViewById(R.id.message_item_row_txt_content);
+            rootLayout = itemView.findViewById(R.id.message_item_row_root_layout);
         }
     }
 
-    class ViewHolderOnline extends ViewHolder {
+    public void refreshAdapterOnline() {
+        onlineAdapter.notifyDataSetChanged();
+    }
+
+    class ViewHolderOnline extends ViewHolder implements ItemClickHandler {
         private RecyclerView recyclerViewOnline;
-        private OnlineAdapter onlineAdapter;
+        private ItemClickHandler itemClickHandler = this;
 
         public ViewHolderOnline(@NonNull @NotNull View itemView) {
             super(itemView);
@@ -89,8 +127,15 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.ViewHold
             LinearLayoutManager linearLayoutManagerOnline = new LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false);
             recyclerViewOnline.setLayoutManager(linearLayoutManagerOnline);
 
-            onlineAdapter = new OnlineAdapter(context, accountResponses);
+            onlineAdapter = new OnlineAdapter(context, accountResponses, itemClickHandler);
             recyclerViewOnline.setAdapter(onlineAdapter);
+        }
+
+        @Override
+        public void itemClick(int position) {
+            Intent intent = new Intent(context, SendMessageActivity.class);
+            intent.putExtra(SendMessageActivity.FRIEND_ACCOUNT_KEY, accountResponses.get(position));
+            context.startActivity(intent);
         }
     }
 }
