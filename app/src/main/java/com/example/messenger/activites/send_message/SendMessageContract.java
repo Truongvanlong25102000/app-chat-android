@@ -11,17 +11,13 @@ public class SendMessageContract {
 
         void getAccountFriendFail();
 
-        void getHistoryChatSuccess(ArrayList<ChatResponse> chatResponses, String path);
+        void getHistoryChatSuccess(ArrayList<ChatResponse> chatResponses);
 
         void getHistoryChatFail();
 
         void sendMessageSuccess();
 
         void sendMessageFail();
-
-        void dataIsExist(String path, ArrayList<ChatResponse> chatResponses);
-
-        void dataDoesNotExist();
     }
 
     interface presenter {
@@ -31,6 +27,5 @@ public class SendMessageContract {
 
         void sendMessage(String content, String idSender, String idReceiver);
 
-        void checkDataIsExist(String path);
     }
 }

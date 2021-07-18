@@ -26,6 +26,7 @@ import com.example.messenger.helpers.databases.FireBaseTableKey;
 import com.example.messenger.models.AccountResponse;
 import com.example.messenger.models.ChatResponse;
 import com.example.messenger.models.MessageResponse;
+import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.FirebaseDatabase;
@@ -50,10 +51,7 @@ public class SendMessageActivity extends AppCompatActivity implements ItemClickH
     private MessageResponse messageResponse;
     private SendMessageContract.presenter mPresenter;
     private InputMethodManager imm;
-    private String currentPath = "";
-    private String path1 = "";
-    private String path2 = "";
-    private Boolean isCheckToSendData = false;
+    private Boolean isShowKeyBroad = false;
 
     private enum StateAccount {
         ONLINE("Online now"),
@@ -98,9 +96,6 @@ public class SendMessageActivity extends AppCompatActivity implements ItemClickH
         String idFriend = "";
         if (accountResponse != null) {
             idFriend = accountResponse.getId();
-            path1 = FireBaseTableKey.CHAT_KEY + userName + "_" + idFriend;
-            path2 = FireBaseTableKey.CHAT_KEY + idFriend + "_" + userName;
-
             txtNameFriendBanner.setText(accountResponse.getDisplay_name());
             if (accountResponse.getState() == 0) {
                 banner_send_message_txt_state.setText(StateAccount.OFFLINE.value);
@@ -108,40 +103,53 @@ public class SendMessageActivity extends AppCompatActivity implements ItemClickH
                 banner_send_message_txt_state.setText(StateAccount.ONLINE.value);
             }
         } else if (messageResponse != null) {
-            path1 = FireBaseTableKey.CHAT_KEY + userName + "_" + messageResponse.getId();
-            path2 = FireBaseTableKey.CHAT_KEY + messageResponse.getId() + "_" + userName;
+            idFriend = messageResponse.getId();
             mPresenter.getAccountFriend(FireBaseTableKey.ACCOUNT_KEY + messageResponse.getId());
         }
-        checkData(path1);
-        checkData(path2);
-    }
 
-    /**
-     * @param node id in table chat
-     */
-    private void checkData(String node) {
-        mPresenter.checkDataIsExist(node);
-    }
+        mPresenter.getHistoryChat(FireBaseTableKey.CHAT_KEY + userName + "/" + idFriend);
+        FirebaseDatabase.getInstance().getReference(FireBaseTableKey.MESSAGE_KEY).child(userName).child(idFriend).child("is_read").setValue(true);
+        FirebaseDatabase.getInstance().getReference(FireBaseTableKey.MESSAGE_KEY).child(idFriend).child(userName).child("is_read").setValue(true);
 
-    private Boolean isShowKeyBroad = false;
+    }
 
     private void initEvent() {
-        imm = (InputMethodManager) this.getSystemService(Context.INPUT_METHOD_SERVICE);
+        keyBroadHandler();
+        backPressed();
+        textInputListener();
+        sendMessageHandler();
+        sendFileHandler();
+    }
 
+    private void sendFileHandler() {
+        input_message_img_picture.setOnClickListener(v -> {
+            BottomSheetDialogFragment bottomSheetDialogFragment = new BottomSheetDialogFragment();
+            bottomSheetDialogFragment.show(this.getSupportFragmentManager(), bottomSheetDialogFragment.getTag());
+        });
+    }
+
+    private void keyBroadHandler() {
         edt_input.setOnClickListener(v -> {
             isShowKeyBroad = true;
             edt_input.requestFocus();
             imm.showSoftInput(edt_input, InputMethodManager.SHOW_IMPLICIT);
         });
+    }
 
-        imgBackButton.setOnClickListener(v -> {
-            if (isShowKeyBroad) {
-                setStateKeyBroad();
-            } else {
-                finish();
+    private void sendMessageHandler() {
+        input_message_img_send.setOnClickListener(v -> {
+            if (edt_input.getText().toString().trim().length() > 0) {
+                String idSender = (String) SharedPreferencesHelper.INSTANCE.get(SharedPreferencesKeys.ID_ACCOUNT, String.class);
+                String idReceiver = accountResponse.getId();
+
+                mPresenter.sendMessage(edt_input.getText().toString(), idSender, idReceiver);
+                edt_input.getText().clear();
             }
+            setStateKeyBroad();
         });
+    }
 
+    private void textInputListener() {
         edt_input.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
@@ -164,21 +172,15 @@ public class SendMessageActivity extends AppCompatActivity implements ItemClickH
 
             }
         });
+    }
 
-        input_message_img_send.setOnClickListener(v -> {
-            if (edt_input.getText().toString().trim().length() > 0) {
-                String idSender = (String) SharedPreferencesHelper.INSTANCE.get(SharedPreferencesKeys.ID_ACCOUNT, String.class);
-                String idReceiver = accountResponse.getId();
-
-                int index = currentPath.lastIndexOf(idReceiver);
-                if (index > 0) {
-                    mPresenter.sendMessage(edt_input.getText().toString(), idSender, idReceiver);
-                } else {
-                    mPresenter.sendMessage(edt_input.getText().toString(), idReceiver, idSender);
-                }
-                edt_input.getText().clear();
+    private void backPressed() {
+        imgBackButton.setOnClickListener(v -> {
+            if (isShowKeyBroad) {
+                setStateKeyBroad();
+            } else {
+                finish();
             }
-            setStateKeyBroad();
         });
     }
 
@@ -205,10 +207,11 @@ public class SendMessageActivity extends AppCompatActivity implements ItemClickH
         recyclerViewChat = findViewById(R.id.fragment_send_message_recycler_view);
         chatAdapter = new ChatAdapter(SendMessageActivity.this, chatResponses, itemClickHandler, accountResponse);
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(SendMessageActivity.this, LinearLayoutManager.VERTICAL, false);
-        linearLayoutManager.setReverseLayout(true);
+        linearLayoutManager.setStackFromEnd(true);
         recyclerViewChat.setLayoutManager(linearLayoutManager);
         recyclerViewChat.setAdapter(chatAdapter);
         mPresenter = new SendMessagePresenter(this);
+        imm = (InputMethodManager) this.getSystemService(Context.INPUT_METHOD_SERVICE);
     }
 
     @Override
@@ -234,10 +237,11 @@ public class SendMessageActivity extends AppCompatActivity implements ItemClickH
     }
 
     @Override
-    public void getHistoryChatSuccess(ArrayList<ChatResponse> chatResponses, String path) {
-        currentPath = path;
+    public void getHistoryChatSuccess(ArrayList<ChatResponse> chatResponses) {
+        this.chatResponses.clear();
         this.chatResponses.addAll(chatResponses);
         chatAdapter.notifyDataSetChanged();
+        recyclerViewChat.smoothScrollToPosition(chatAdapter.getItemCount());
     }
 
     @Override
@@ -257,20 +261,4 @@ public class SendMessageActivity extends AppCompatActivity implements ItemClickH
         Toast.makeText(SendMessageActivity.this, "Send message fail", Toast.LENGTH_SHORT).show();
     }
 
-    @Override
-    public void dataIsExist(String path, ArrayList<ChatResponse> chatResponses) {
-        currentPath = path;
-        this.chatResponses.addAll(chatResponses);
-        chatAdapter.notifyDataSetChanged();
-    }
-
-    @Override
-    public void dataDoesNotExist() {
-        currentPath = path1;
-    }
-
-    @Override
-    public void onBackPressed() {
-        super.onBackPressed();
-    }
 }

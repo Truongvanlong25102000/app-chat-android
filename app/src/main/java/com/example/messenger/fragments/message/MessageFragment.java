@@ -56,7 +56,7 @@ public class MessageFragment extends Fragment implements ItemClickHandler, Messa
 
     private void initView(View view) {
         recyclerViewMessage = view.findViewById(R.id.fragment_message_recycler);
-        messageAdapter = new MessageAdapter(getContext(), messageResponses, accountResponses, itemClickHandler,friendChats);
+        messageAdapter = new MessageAdapter(getContext(), messageResponses, accountResponses, itemClickHandler, friendChats);
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false);
         recyclerViewMessage.setLayoutManager(linearLayoutManager);
         recyclerViewMessage.setAdapter(messageAdapter);
@@ -90,6 +90,7 @@ public class MessageFragment extends Fragment implements ItemClickHandler, Messa
 
     @Override
     public void getMessageSuccess(ArrayList<MessageResponse> messageResponses) {
+        this.messageResponses.clear();
         this.messageResponses.addAll(messageResponses);
         messageAdapter.notifyDataSetChanged();
 
@@ -103,11 +104,9 @@ public class MessageFragment extends Fragment implements ItemClickHandler, Messa
     @Override
     public void onResume() {
         super.onResume();
-//        if(mPresenter!=null){
-//            String userName = (String) SharedPreferencesHelper.INSTANCE.get(SharedPreferencesKeys.ID_ACCOUNT, String.class);
-//            mPresenter.getAccountFriend(FireBaseTableKey.ACCOUNT_KEY + userName);
-//            mPresenter.getMessage(FireBaseTableKey.MESSAGE_KEY + userName);
-//        }
+        if (messageAdapter != null) {
+            messageAdapter.notifyDataSetChanged();
+        }
     }
 
     private void fakeDataListChat() {

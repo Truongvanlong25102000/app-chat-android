@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -29,7 +30,10 @@ import com.google.firebase.database.FirebaseDatabase;
 
 import org.jetbrains.annotations.NotNull;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
+import java.util.Locale;
 import java.util.Map;
 
 public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.ViewHolder> {
@@ -39,6 +43,7 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.ViewHold
     private ItemClickHandler itemClickHandler;
     private OnlineAdapter onlineAdapter;
     private ArrayList<AccountResponse> friendChats = new ArrayList<>();
+    private SimpleDateFormat df = new SimpleDateFormat("hh:mm a", Locale.US);
 
     public MessageAdapter(Context context, ArrayList<MessageResponse> messageResponses, ArrayList<AccountResponse> accountResponses, ItemClickHandler itemClickHandler, ArrayList<AccountResponse> friendChats) {
         this.context = context;
@@ -70,16 +75,16 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.ViewHold
 
             holder.txtNameUser.setText(messageResponses.get(position - 1).getId_sender());
             holder.txtContent.setText(messageResponses.get(position - 1).getContent());
-//            if (friendChats.get(position-1).getState() == 0) {
-//                holder.message_item_row_img_online.setVisibility(View.GONE);
-//            } else {
-//                holder.message_item_row_img_online.setVisibility(View.VISIBLE);
-//            }
-//
-//            if (friendChats.get(position-1).getThumbnail() != null) {
-//                Glide.with(context).load(friendChats.get(position-1).getThumbnail()).placeholder(R.drawable.avatar).into(holder.imgUser);
-//            }
+            if (messageResponses.get(position - 1).getIs_read()) {
+                holder.message_item_row_ic_read.setVisibility(View.GONE);
+            } else {
+                holder.message_item_row_ic_read.setVisibility(View.VISIBLE);
+            }
 
+            String last_at = df.format(new Date());
+            if (!last_at.equals(messageResponses.get(position - 1).getLast_at())) {
+                holder.txt_time_last_at.setText(messageResponses.get(position - 1).getLast_at());
+            }
         }
     }
 
@@ -101,15 +106,19 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.ViewHold
         private ShapeableImageView imgUser, message_item_row_img_online;
         private TextView txtNameUser;
         private TextView txtContent;
+        private TextView txt_time_last_at;
         private LinearLayout rootLayout;
+        private ImageView message_item_row_ic_read;
 
         public ViewHolder(@NonNull @NotNull View itemView) {
             super(itemView);
             imgUser = itemView.findViewById(R.id.message_item_row_img_user);
             message_item_row_img_online = itemView.findViewById(R.id.message_item_row_img_online);
             txtContent = itemView.findViewById(R.id.message_item_row_txt_content);
+            txt_time_last_at = itemView.findViewById(R.id.txt_time_last_at);
             txtNameUser = itemView.findViewById(R.id.message_item_row_txt_content);
             rootLayout = itemView.findViewById(R.id.message_item_row_root_layout);
+            message_item_row_ic_read = itemView.findViewById(R.id.message_item_row_ic_read);
         }
     }
 
