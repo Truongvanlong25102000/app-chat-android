@@ -21,7 +21,7 @@ import org.jetbrains.annotations.NotNull;
 public class SignInActivity extends AppCompatActivity {
     private FirebaseAuth firebaseAuth;
 
-    private Button btnSignIn, btnLogin;
+    private Button btnSignIn;
     private EditText edtUserName, edtPassWord, edtEmail, edt_pass_word_email;
 
     @Override
@@ -56,7 +56,6 @@ public class SignInActivity extends AppCompatActivity {
     }
 
     private void initView() {
-        btnLogin = findViewById(R.id.btnLogin);
         btnSignIn = findViewById(R.id.btn_sign_in);
         edtPassWord = findViewById(R.id.edt_pass_word);
         edtUserName = findViewById(R.id.edt_user_name);
