@@ -7,22 +7,22 @@
 
     <fragment
         android:id="@+id/phoneFragment"
-        android:name="com.example.messenger.PhoneFragment"
+        android:name="com.example.messenger.fragments.PhoneFragment"
         android:label="fragment_phone"
         tools:layout="@layout/fragment_phone" />
     <fragment
         android:id="@+id/cameraFragment"
-        android:name="com.example.messenger.CameraFragment"
+        android:name="com.example.messenger.fragments.CameraFragment"
         android:label="fragment_camera"
         tools:layout="@layout/fragment_camera" />
     <fragment
         android:id="@+id/messageFragment"
-        android:name="com.example.messenger.MessageFragment"
+        android:name="com.example.messenger.fragments.message.MessageFragment"
         android:label="fragment_message"
         tools:layout="@layout/fragment_message" />
     <fragment
         android:id="@+id/userFragment"
-        android:name="com.example.messenger.UserFragment"
+        android:name="com.example.messenger.fragments.UserFragment"
         android:label="fragment_user"
         tools:layout="@layout/fragment_user" />
 </navigation>

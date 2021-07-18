@@ -3,12 +3,14 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".MessageFragment">
+    android:layout_marginBottom="50dp"
+    tools:context=".fragments.message.MessageFragment">
 
-    <!-- TODO: Update blank fragment layout -->
-    <TextView
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/fragment_message_recycler"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:text="2222@string/hello_blank_fragment" />
+        tools:itemCount="10"
+        tools:listitem="@layout/message_item_row" />
 
 </FrameLayout>

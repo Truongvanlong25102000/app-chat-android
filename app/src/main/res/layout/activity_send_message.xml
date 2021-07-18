@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/bg_fragment"
+    android:orientation="vertical"
+    tools:context=".activites.send_message.SendMessageActivity">
+
+    <include
+        android:id="@+id/activity_send_message_layout_banner"
+        layout="@layout/banner_send_message" />
+
+    <include
+        android:id="@+id/activity_send_message_layout_fragment_messages"
+        layout="@layout/fragment_send_message"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_weight="1" />
+
+    <include layout="@layout/input_send_message_item_row" />
+</LinearLayout>
