@@ -3,12 +3,48 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".fragments.PhoneFragment">
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    tools:context=".fragments.PhoneFragment"
+    android:paddingTop="10dp"
+    android:paddingLeft="10dp"
+    android:paddingRight="10dp"
+    android:layout_marginBottom="50dp"
+    android:descendantFocusability="blocksDescendants"
+   >
 
-    <!-- TODO: Update blank fragment layout -->
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:text="3333@string/hello_blank_fragment" />
+    <LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:orientation="vertical"
+       >
+
+<!--        <ListView-->
+<!--            android:id="@+id/list"-->
+<!--            android:layout_width="fill_parent"-->
+<!--            android:layout_height="fill_parent"-->
+<!--            android:layout_weight="1"-->
+<!--            android:drawSelectorOnTop="false"-->
+<!--            tools:listitem="@layout/item_contact" />-->
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:clickable="false"
+            android:focusable="false"
+            android:focusableInTouchMode="false"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:id="@+id/rv_list"
+            android:layout_weight="1"
+            android:drawSelectorOnTop="false"
+            tools:listitem="@layout/item_contact"/>
+
+<!--        <TextView-->
+<!--            android:id="@+id/tv_contact"-->
+<!--            android:layout_width="fill_parent"-->
+<!--            android:layout_height="203dp"-->
+<!--            android:layout_gravity="center"-->
+<!--            android:gravity="center"-->
+<!--            android:textAppearance="?android:attr/textAppearanceLarge" />-->
+
+    </LinearLayout>
 
 </FrameLayout>
