@@ -29,15 +29,12 @@ public class CameraFragment extends Fragment {
     public CameraFragment() {
         // Required empty public constructor
     }
-
     public static CameraFragment newInstance() {
         CameraFragment fragment = new CameraFragment();
         return fragment;
     }
 
     int REQUEST_CODE = 123;
-
-
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
