@@ -8,6 +8,7 @@
     <uses-permission android:name="android.permission.MANAGE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.CAMERA" />
+    <uses-permission android:name="android.permission.CALL_PHONE" />
 
     <application
         android:name=".base.MainApplication"
@@ -18,7 +19,8 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.Messenger"
         android:usesCleartextTraffic="true">
-        <activity android:name=".activites.search.SearchActivity"></activity>
+        <activity android:name=".activites.create_message.CreateMessageActivity"></activity>
+        <activity android:name=".activites.search.SearchActivity" />
         <activity android:name=".activites.gallery.GalleryActivity" />
         <activity android:name=".activites.sigin.SignInActivity" />
         <activity android:name=".activites.login.LoginActivity" />

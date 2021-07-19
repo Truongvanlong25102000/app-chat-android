@@ -9,6 +9,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.content.ClipData;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
@@ -129,6 +130,7 @@ public class SendMessageActivity extends AppCompatActivity implements ItemClickH
             } else {
                 banner_send_message_txt_state.setText(StateAccount.ONLINE.value);
             }
+            SharedPreferencesHelper.INSTANCE.put(SharedPreferencesKeys.PHONE, accountResponse.getPhone());
         } else if (messageResponse != null) {
             idFriend = messageResponse.getId();
             mPresenter.getAccountFriend(FireBaseTableKey.ACCOUNT_KEY + messageResponse.getId());
@@ -146,6 +148,21 @@ public class SendMessageActivity extends AppCompatActivity implements ItemClickH
         textInputListener();
         sendMessageHandler();
         sendFileHandler();
+        call();
+    }
+
+    private void call() {
+        imgPhoneButton.setOnClickListener(v -> {
+            String phone = (String) SharedPreferencesHelper.INSTANCE.get(SharedPreferencesKeys.PHONE, String.class);
+            if (phone.equals("")) {
+                Toast.makeText(SendMessageActivity.this, "Phone does not exit", Toast.LENGTH_SHORT).show();
+            } else {
+                Intent intent = new Intent(Intent.ACTION_CALL);
+                intent.setData(Uri.parse("tel:" + phone));
+                startActivity(intent);
+            }
+
+        });
     }
 
     private void sendFileHandler() {
@@ -262,7 +279,7 @@ public class SendMessageActivity extends AppCompatActivity implements ItemClickH
         recyclerViewChat = findViewById(R.id.fragment_send_message_recycler_view);
 
         messagePictureAdapter = new MessagePictureAdapter(SendMessageActivity.this, uris, urls);
-        chatAdapter = new ChatAdapter(SendMessageActivity.this, chatResponses, itemClickHandler, accountResponse,messagePictureAdapter,uris);
+        chatAdapter = new ChatAdapter(SendMessageActivity.this, chatResponses, itemClickHandler, accountResponse, messagePictureAdapter, uris);
 
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(SendMessageActivity.this, LinearLayoutManager.VERTICAL, false);
         linearLayoutManager.setStackFromEnd(true);
@@ -286,6 +303,7 @@ public class SendMessageActivity extends AppCompatActivity implements ItemClickH
     @Override
     public void getAccountFriendSuccess(AccountResponse accountResponse) {
         this.accountResponse = accountResponse;
+        SharedPreferencesHelper.INSTANCE.put(SharedPreferencesKeys.PHONE, accountResponse.getPhone());
         txtNameFriendBanner.setText(accountResponse.getDisplay_name());
         if (accountResponse.getState() == 0) {
             banner_send_message_txt_state.setText(StateAccount.OFFLINE.value);

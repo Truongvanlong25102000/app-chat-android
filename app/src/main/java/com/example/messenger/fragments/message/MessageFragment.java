@@ -11,6 +11,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ProgressBar;
 
 import com.example.messenger.R;
 import com.example.messenger.activites.send_message.SendMessageActivity;
@@ -40,6 +41,7 @@ public class MessageFragment extends Fragment implements ItemClickHandler, Messa
     private ArrayList<AccountResponse> friendChats = new ArrayList<>();
     private ItemClickHandler itemClickHandler = this;
     private MessageContract.Presenter mPresenter;
+    private ProgressBar progress_bar;
 
     public MessageFragment() {
         // Required empty public constructor
@@ -55,6 +57,7 @@ public class MessageFragment extends Fragment implements ItemClickHandler, Messa
     }
 
     private void initView(View view) {
+        progress_bar = view.findViewById(R.id.progress_bar);
         recyclerViewMessage = view.findViewById(R.id.fragment_message_recycler);
         messageAdapter = new MessageAdapter(getContext(), messageResponses, accountResponses, itemClickHandler, friendChats);
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false);
@@ -81,6 +84,7 @@ public class MessageFragment extends Fragment implements ItemClickHandler, Messa
         this.accountResponses.addAll(accountResponses);
         messageAdapter.notifyDataSetChanged();
         messageAdapter.refreshAdapterOnline();
+        progress_bar.setVisibility(View.GONE);
     }
 
     @Override

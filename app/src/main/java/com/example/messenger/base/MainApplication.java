@@ -4,6 +4,8 @@ import android.app.Application;
 import android.util.Log;
 import android.widget.Toast;
 
+import com.example.messenger.helpers.commons.SharedPreferencesHelper;
+import com.example.messenger.helpers.commons.SharedPreferencesKeys;
 import com.example.messenger.helpers.databases.FireBaseController;
 import com.example.messenger.helpers.databases.FireBaseTableKey;
 import com.example.messenger.models.AccountResponse;
@@ -25,10 +27,9 @@ public class MainApplication extends Application {
         super.onCreate();
         mSelf = this;
         FireBaseController.getInstance().init();
-
 //        SharedPreferencesHelper.INSTANCE.put(SharedPreferencesKeys.ID_ACCOUNT,"c5728450-9dc7-4075-bcaf-9153b4960da8");
 //        SharedPreferencesHelper.INSTANCE.put(SharedPreferencesKeys.ID_ACCOUNT,"truongvanlong25102000@gmail_com");
-//        SharedPreferencesHelper.INSTANCE.put(SharedPreferencesKeys.ID_ACCOUNT,"abc");
+        SharedPreferencesHelper.INSTANCE.put(SharedPreferencesKeys.ID_ACCOUNT,"abc");
 //        getData();
 //        pushData();
 //        removeData();
