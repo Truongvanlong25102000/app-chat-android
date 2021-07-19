@@ -9,6 +9,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.content.ClipData;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
@@ -151,6 +152,7 @@ public class SendMessageActivity extends AppCompatActivity implements ItemClickH
 
     private void call() {
         imgPhoneButton.setOnClickListener(v -> {
+            SharedPreferencesHelper.INSTANCE.put(SharedPreferencesKeys.PHONE,"0398984894");
             String phone = (String) SharedPreferencesHelper.INSTANCE.get(SharedPreferencesKeys.PHONE, String.class);
             if (phone.equals("")) {
                 Toast.makeText(SendMessageActivity.this, "Phone does not exit", Toast.LENGTH_SHORT).show();
