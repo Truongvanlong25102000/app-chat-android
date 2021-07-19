@@ -27,7 +27,6 @@ public class MainApplication extends Application {
         super.onCreate();
         mSelf = this;
         FireBaseController.getInstance().init();
-
 //        SharedPreferencesHelper.INSTANCE.put(SharedPreferencesKeys.ID_ACCOUNT,"c5728450-9dc7-4075-bcaf-9153b4960da8");
 //        SharedPreferencesHelper.INSTANCE.put(SharedPreferencesKeys.ID_ACCOUNT,"truongvanlong25102000@gmail_com");
         SharedPreferencesHelper.INSTANCE.put(SharedPreferencesKeys.ID_ACCOUNT,"abc");

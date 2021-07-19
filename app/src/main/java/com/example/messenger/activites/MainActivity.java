@@ -1,5 +1,6 @@
 package com.example.messenger.activites;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.navigation.NavController;
 import androidx.navigation.fragment.NavHostFragment;
@@ -18,6 +19,8 @@ import com.example.messenger.activites.search.SearchActivity;
 import com.example.messenger.helpers.commons.SharedPreferencesHelper;
 import com.example.messenger.helpers.commons.SharedPreferencesKeys;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
+
+import org.jetbrains.annotations.NotNull;
 
 public class MainActivity extends AppCompatActivity {
 
