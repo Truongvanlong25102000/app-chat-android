@@ -12,9 +12,16 @@ import android.widget.ImageView;
 
 import com.example.messenger.R;
 import com.example.messenger.components.adapters.SearchAdapter;
+import com.example.messenger.helpers.commons.SharedPreferencesHelper;
+import com.example.messenger.helpers.commons.SharedPreferencesKeys;
+import com.example.messenger.helpers.databases.FireBaseController;
+import com.example.messenger.helpers.databases.FireBaseTableKey;
 import com.example.messenger.models.AccountResponse;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 
 import java.util.ArrayList;
+import java.util.Map;
 import java.util.UUID;
 
 public class SearchActivity extends AppCompatActivity {
@@ -25,17 +32,80 @@ public class SearchActivity extends AppCompatActivity {
     private SearchAdapter searchAdapter;
     private ArrayList<AccountResponse> accountResponses = new ArrayList<>();
     private ArrayList<AccountResponse> currentAccountResponses = new ArrayList<>();
+    private AccountResponse me;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_search);
-        for (int i = 0; i < 100; i++) {
-            accountResponses.add(new AccountResponse(null, UUID.randomUUID().toString(),null,null,null,null,null,null));
-        }
-        currentAccountResponses.addAll(accountResponses);
+//        for (int i = 0; i < 100; i++) {
+//            accountResponses.add(new AccountResponse(null, UUID.randomUUID().toString(),null,null,null,null,null,null));
+//        }
         initView();
         initEvent();
+        try {
+            getData();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void getData() throws Exception{
+        String userName = (String) SharedPreferencesHelper.INSTANCE.get(SharedPreferencesKeys.ID_ACCOUNT, String.class);
+        FireBaseController.getInstance().getData(FireBaseTableKey.ACCOUNT_KEY + userName, new FireBaseController.RetrieveCallBack() {
+            @Override
+            public void retrieveSuccess(DataSnapshot data) {
+                if (data.exists()) {
+                    me = data.getValue(AccountResponse.class);
+                    me.setId(data.getKey());
+                    try {
+                        getFriend();
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+
+            @Override
+            public void retrieveFail(DatabaseError error) {
+
+            }
+        });
+    }
+
+    private void getFriend() throws Exception {
+        ArrayList<String> friendIds = new ArrayList<>();
+        if (me == null || me.getFriend() == null) {
+            searchAdapter.notifyDataSetChanged();
+            return;
+        }
+
+        for (Map.Entry<String, String> map : me.getFriend().entrySet()) {
+            friendIds.add(map.getValue());
+        }
+
+        for (int i = 0; i < friendIds.size(); i++) {
+            FireBaseController.getInstance().getData(FireBaseTableKey.ACCOUNT_KEY + friendIds.get(i), new FireBaseController.RetrieveCallBack() {
+                @Override
+                public void retrieveSuccess(DataSnapshot data) {
+                    if (data.getValue() instanceof Map) {
+                        AccountResponse accountResponse = data.getValue(AccountResponse.class);
+                        accountResponse.setId(data.getKey());
+
+                        accountResponses.add(accountResponse);
+
+                        if (accountResponses.size() == friendIds.size()) {
+                            searchAdapter.notifyDataSetChanged();
+                        }
+                    }
+                }
+
+                @Override
+                public void retrieveFail(DatabaseError error) {
+                    searchAdapter.notifyDataSetChanged();
+                }
+            });
+        }
     }
 
     private void initEvent() {

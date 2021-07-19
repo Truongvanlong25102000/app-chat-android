@@ -23,6 +23,7 @@
         android:layout_height="wrap_content"
         android:layout_marginLeft="40dp"
         android:hint="Search"
+        android:maxLines="1"
         android:padding="16dp"
         android:textColor="@android:color/white"
         android:textColorHint="@color/bg_input"
