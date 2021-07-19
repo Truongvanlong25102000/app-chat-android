@@ -157,9 +157,9 @@ public class SendMessageActivity extends AppCompatActivity implements ItemClickH
             if (phone.equals("")) {
                 Toast.makeText(SendMessageActivity.this, "Phone does not exit", Toast.LENGTH_SHORT).show();
             } else {
-//                Intent intent = new Intent(Intent.ACTION_CALL);
-//                intent.setData(Uri.parse("tel:" + phone));
-//                startActivity(intent);
+                Intent intent = new Intent(Intent.ACTION_CALL);
+                intent.setData(Uri.parse("tel:" + phone));
+                startActivity(intent);
             }
 
         });
