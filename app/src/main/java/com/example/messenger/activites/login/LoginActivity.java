@@ -112,9 +112,11 @@ public class LoginActivity extends AppCompatActivity {
             });
         });
 
-        btnSignIn.setOnClickListener(v -> {
-            startActivity(new Intent(LoginActivity.this, SignInActivity.class));
-        });
+        if(btnSignIn!=null){
+            btnSignIn.setOnClickListener(v -> {
+                startActivity(new Intent(LoginActivity.this, SignInActivity.class));
+            });
+        }
     }
 
     private void initView() {

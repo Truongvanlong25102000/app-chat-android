@@ -32,7 +32,7 @@ public class FirebaseStorageHelper {
         void uploadFileFail();
     }
 
-    public void upLoadFile(ArrayList<Uri> uris, String idSender, String idReceiver, String idChat,UploadFileCallBack callBack) {
+    public void upLoadFile(ArrayList<Uri> uris, String idSender, String idReceiver, String idChat, UploadFileCallBack callBack) {
         String pathSender = FireBaseTableKey.CHAT_KEY + idSender + "/" + idReceiver;
         String pathReceiver = FireBaseTableKey.CHAT_KEY + idReceiver + "/" + idSender;
 
@@ -43,7 +43,7 @@ public class FirebaseStorageHelper {
             mountainsRef = storageReference.child("images/" + idChat);
             mountainsRef.putFile(uris.get(i)).addOnSuccessListener(taskSnapshot -> {
                 taskSnapshot.getStorage().getDownloadUrl().addOnSuccessListener(uri -> {
-                    callBack.uploadFileSuccess(idSender,idReceiver,idChat,uri.toString());
+                    callBack.uploadFileSuccess(idSender, idReceiver, idChat, uri.toString());
                 });
             }).addOnFailureListener(e -> {
                 e.printStackTrace();
@@ -52,5 +52,22 @@ public class FirebaseStorageHelper {
         }
     }
 
+    public void upLoadFile(ArrayList<Uri> uris, String path, UploadFileCallBack callBack) {
+        String idChat = String.valueOf((new Date().getTime()));
+        StorageReference mountainsRef;
+        Uri file;
+        for (int i = 0; i < uris.size(); i++) {
+            file = Uri.fromFile(new File(uris.get(i).getPath()));
+            mountainsRef = storageReference.child("images/" + idChat);
+            mountainsRef.putFile(uris.get(i)).addOnSuccessListener(taskSnapshot -> {
+                taskSnapshot.getStorage().getDownloadUrl().addOnSuccessListener(uri -> {
+                    callBack.uploadFileSuccess("", "", "", uri.toString());
+                });
+            }).addOnFailureListener(e -> {
+                e.printStackTrace();
+                callBack.uploadFileFail();
+            });
+        }
+    }
 
 }
