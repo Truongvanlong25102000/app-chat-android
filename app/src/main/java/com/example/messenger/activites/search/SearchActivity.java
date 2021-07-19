@@ -7,8 +7,10 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 
 import com.example.messenger.R;
 import com.example.messenger.components.adapters.SearchAdapter;
@@ -33,6 +35,7 @@ public class SearchActivity extends AppCompatActivity {
     private ArrayList<AccountResponse> accountResponses = new ArrayList<>();
     private ArrayList<AccountResponse> currentAccountResponses = new ArrayList<>();
     private AccountResponse me;
+    private ProgressBar progress_bar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -97,6 +100,7 @@ public class SearchActivity extends AppCompatActivity {
                         if (accountResponses.size() == friendIds.size()) {
                             currentAccountResponses.addAll(accountResponses);
                             searchAdapter.notifyDataSetChanged();
+                            progress_bar.setVisibility(View.GONE);
                         }
                     }
                 }
@@ -127,12 +131,17 @@ public class SearchActivity extends AppCompatActivity {
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
                 if (s != null && s.toString().trim().length() > 0) {
+                    accountResponses.clear();
                     for (int i = 0; i < currentAccountResponses.size(); i++) {
                         if (currentAccountResponses.get(i).getDisplay_name().contains(s)) {
                             accountResponses.add(currentAccountResponses.get(i));
                         }
                         searchAdapter.notifyDataSetChanged();
                     }
+                } else {
+                    accountResponses.clear();
+                    accountResponses.addAll(currentAccountResponses);
+                    searchAdapter.notifyDataSetChanged();
                 }
             }
 
@@ -146,6 +155,7 @@ public class SearchActivity extends AppCompatActivity {
     private void initView() {
         imgBackButton = findViewById(R.id.img_back_button);
         edtSearch = findViewById(R.id.edt_search);
+        progress_bar = findViewById(R.id.progress_bar);
         recyclerViewSearch = findViewById(R.id.recycler_search);
         searchAdapter = new SearchAdapter(SearchActivity.this, accountResponses);
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(SearchActivity.this, LinearLayoutManager.VERTICAL, false);

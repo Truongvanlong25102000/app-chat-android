@@ -130,6 +130,7 @@ public class SendMessageActivity extends AppCompatActivity implements ItemClickH
             } else {
                 banner_send_message_txt_state.setText(StateAccount.ONLINE.value);
             }
+            SharedPreferencesHelper.INSTANCE.put(SharedPreferencesKeys.PHONE, accountResponse.getPhone());
         } else if (messageResponse != null) {
             idFriend = messageResponse.getId();
             mPresenter.getAccountFriend(FireBaseTableKey.ACCOUNT_KEY + messageResponse.getId());
@@ -152,7 +153,6 @@ public class SendMessageActivity extends AppCompatActivity implements ItemClickH
 
     private void call() {
         imgPhoneButton.setOnClickListener(v -> {
-            SharedPreferencesHelper.INSTANCE.put(SharedPreferencesKeys.PHONE,"0398984894");
             String phone = (String) SharedPreferencesHelper.INSTANCE.get(SharedPreferencesKeys.PHONE, String.class);
             if (phone.equals("")) {
                 Toast.makeText(SendMessageActivity.this, "Phone does not exit", Toast.LENGTH_SHORT).show();
@@ -304,6 +304,7 @@ public class SendMessageActivity extends AppCompatActivity implements ItemClickH
     @Override
     public void getAccountFriendSuccess(AccountResponse accountResponse) {
         this.accountResponse = accountResponse;
+        SharedPreferencesHelper.INSTANCE.put(SharedPreferencesKeys.PHONE, accountResponse.getPhone());
         txtNameFriendBanner.setText(accountResponse.getDisplay_name());
         if (accountResponse.getState() == 0) {
             banner_send_message_txt_state.setText(StateAccount.OFFLINE.value);
