@@ -4,6 +4,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -13,6 +14,8 @@ import android.widget.ImageView;
 import android.widget.ProgressBar;
 
 import com.example.messenger.R;
+import com.example.messenger.activites.send_message.SendMessageActivity;
+import com.example.messenger.components.ItemClickHandler;
 import com.example.messenger.components.adapters.SearchAdapter;
 import com.example.messenger.helpers.commons.SharedPreferencesHelper;
 import com.example.messenger.helpers.commons.SharedPreferencesKeys;
@@ -26,7 +29,7 @@ import java.util.ArrayList;
 import java.util.Map;
 import java.util.UUID;
 
-public class SearchActivity extends AppCompatActivity {
+public class SearchActivity extends AppCompatActivity implements ItemClickHandler {
 
     private EditText edtSearch;
     private RecyclerView recyclerViewSearch;
@@ -36,6 +39,7 @@ public class SearchActivity extends AppCompatActivity {
     private ArrayList<AccountResponse> currentAccountResponses = new ArrayList<>();
     private AccountResponse me;
     private ProgressBar progress_bar;
+    private ItemClickHandler itemClickHandler = this;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -157,9 +161,16 @@ public class SearchActivity extends AppCompatActivity {
         edtSearch = findViewById(R.id.edt_search);
         progress_bar = findViewById(R.id.progress_bar);
         recyclerViewSearch = findViewById(R.id.recycler_search);
-        searchAdapter = new SearchAdapter(SearchActivity.this, accountResponses);
+        searchAdapter = new SearchAdapter(SearchActivity.this, accountResponses, itemClickHandler);
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(SearchActivity.this, LinearLayoutManager.VERTICAL, false);
         recyclerViewSearch.setLayoutManager(linearLayoutManager);
         recyclerViewSearch.setAdapter(searchAdapter);
+    }
+
+    @Override
+    public void itemClick(int position) {
+        Intent intent = new Intent(SearchActivity.this, SendMessageActivity.class);
+        intent.putExtra(SendMessageActivity.FRIEND_ACCOUNT_KEY, accountResponses.get(position));
+        startActivity(intent);
     }
 }
