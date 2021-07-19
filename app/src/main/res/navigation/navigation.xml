@@ -17,7 +17,7 @@
         tools:layout="@layout/fragment_camera" />
     <fragment
         android:id="@+id/messageFragment"
-        android:name="com.example.messenger.fragments.MessageFragment"
+        android:name="com.example.messenger.fragments.message.MessageFragment"
         android:label="fragment_message"
         tools:layout="@layout/fragment_message" />
     <fragment

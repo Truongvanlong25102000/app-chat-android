@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layout_gravity="center"
+    android:background="@drawable/bb"
+    android:orientation="vertical"
+    tools:context=".activites.login.LoginActivity">
+
+    <TextView
+        android:id="@+id/txtSingin"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Sign In"
+        android:textColor="#FFFFFF"
+        android:textSize="36sp"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.498"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.13" />
+
+    <EditText
+        android:id="@+id/edt_user_name"
+        android:layout_width="255dp"
+        android:layout_height="45dp"
+        android:layout_marginStart="4dp"
+        android:layout_marginTop="40dp"
+        android:background="@drawable/custom_signin"
+        android:drawableLeft="@drawable/ic_account"
+        android:drawablePadding="10dp"
+        android:hint="User Name"
+        android:padding="10dp"
+        android:textColor="#FFFEFE"
+        android:textColorHint="#FFFFFF"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/txtSingin" />
+
+    <EditText
+        android:id="@+id/edt_pass_word"
+        android:layout_width="255dp"
+        android:layout_height="45dp"
+        android:layout_marginTop="16dp"
+        android:background="@drawable/custom_signin"
+        android:drawableLeft="@drawable/ic_security"
+        android:drawablePadding="10dp"
+        android:hint="Password"
+        android:inputType="textPassword"
+        android:padding="10dp"
+        android:textColor="@color/white"
+        android:textColorHint="@color/white"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.512"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/edt_user_name" />
+
+    <EditText
+        android:id="@+id/edt_email"
+        android:layout_width="255dp"
+        android:layout_height="45dp"
+        android:layout_marginTop="16dp"
+        android:background="@drawable/custom_signin"
+        android:drawableLeft="@drawable/ic_mail"
+        android:drawablePadding="10dp"
+        android:hint="Email"
+        android:inputType="textEmailAddress"
+        android:padding="10dp"
+        android:textColor="@color/white"
+        android:textColorHint="@color/white"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.512"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/edt_pass_word" />
+
+    <EditText
+        android:id="@+id/edt_pass_word_email"
+        android:layout_width="255dp"
+        android:layout_height="45dp"
+        android:layout_marginTop="16dp"
+        android:background="@drawable/custom_signin"
+        android:drawableLeft="@drawable/ic_security"
+        android:drawablePadding="10dp"
+        android:hint="Password Email"
+        android:inputType="textPassword"
+        android:padding="10dp"
+        android:textColor="@color/white"
+        android:textColorHint="@color/white"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.512"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/edt_email" />
+
+    <Button
+        android:id="@+id/btn_sign_in"
+        android:layout_width="255dp"
+        android:layout_height="45dp"
+        android:layout_marginTop="40dp"
+        android:background="@drawable/custom_button_signin"
+        android:text="Sign in"
+        app:layout_constraintEnd_toEndOf="@+id/edt_pass_word_email"
+        app:layout_constraintHorizontal_bias="0.564"
+        app:layout_constraintStart_toStartOf="@+id/edt_pass_word_email"
+        app:layout_constraintTop_toBottomOf="@+id/edt_pass_word_email" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

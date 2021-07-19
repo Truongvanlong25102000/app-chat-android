@@ -26,7 +26,11 @@ import android.widget.Toast;
 
 import java.net.URI;
 
+import com.bumptech.glide.Glide;
 import com.example.messenger.R;
+import com.example.messenger.helpers.commons.SharedPreferencesHelper;
+import com.example.messenger.helpers.commons.SharedPreferencesKeys;
+import com.example.messenger.helpers.databases.FireBaseController;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -50,7 +54,7 @@ public class UserFragment extends Fragment {
     Uri imageUri;
     /* IMAGE_CODE là một giá trị int dùng để định danh mỗi request.
      Khi nhận được kết quả, hàm callback sẽ trả về cùng IMAGE_CODE này để ta có thể xác định và xử lý kết quả. */
-    public static final int IMAGE_CODE=1;
+    public static final int IMAGE_CODE = 1;
 
     public UserFragment() {
         // Required empty public constructor
@@ -88,20 +92,42 @@ public class UserFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        if (view != null) {
-            ViewGroup parent = (ViewGroup) view.getParent();
-            if (parent != null) {
-                parent.removeView(view);
+        View view = inflater.inflate(R.layout.fragment_user, container, false);
+        txtUsername = (TextView) view.findViewById(R.id.txtUsername);
+        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getActivity().getApplicationContext());
+        String Username = sharedPreferences.getString("preUsername", "");
+        txtUsername.setText(Username);
+        imgAvatar = (ImageView) view.findViewById(R.id.imgAvatar);
+        String thumbnail = (String) SharedPreferencesHelper.INSTANCE.get(SharedPreferencesKeys.THUMBNAIL, String.class);
+        if (thumbnail.length() > 0 && !thumbnail.equals("")) {
+            Glide.with(getContext()).load(thumbnail).into(imgAvatar);
+        }
+
+        imgAvatar.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                PopupMenu popupMenu = new PopupMenu(getActivity(), imgAvatar);
+                popupMenu.getMenuInflater().inflate(R.menu.avatar_menu, popupMenu.getMenu());
+                popupMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
+                    @Override
+                    public boolean onMenuItemClick(MenuItem item) {
+                        if (item.getItemId() == R.id.chupAvatar) {
+
+                        } else if (item.getItemId() == R.id.chonAvatar) {
+                            chonAnh();
+                        }
+                        return false;
+                    }
+                });
+                popupMenu.show();
             }
 
-        }
+        });
         try {
 
 
             view = inflater.inflate(R.layout.fragment_user, container, false);
             txtUsername = (TextView) view.findViewById(R.id.txtUsername);
-            SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getActivity().getApplicationContext());
-            String Username = sharedPreferences.getString("preUsername", "");
             txtUsername.setText(Username);
             imgAvatar = (ImageView) view.findViewById(R.id.imgAvatar);
             imgAvatar.setOnClickListener(new View.OnClickListener() {
@@ -138,7 +164,7 @@ public class UserFragment extends Fragment {
     @Override
     public void onActivityResult(int requestCode, int resultCode, @Nullable @org.jetbrains.annotations.Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode==IMAGE_CODE && resultCode== Activity.RESULT_OK && data!=null && data.getData()!=null){
+        if (requestCode == IMAGE_CODE && resultCode == Activity.RESULT_OK && data != null && data.getData() != null) {
             imageUri = data.getData();
             imgAvatar.setImageURI(imageUri);
         }

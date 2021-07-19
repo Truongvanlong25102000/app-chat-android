@@ -28,4 +28,26 @@ public class SharedPreferencesHelper<T> {
 
         return null;
     }
+
+    public <T> void put(String key, T data) {
+        SharedPreferences.Editor editor = mSharedPreferences.edit();
+        if (data instanceof String) {
+            editor.putString(key, (String) data);
+        } else if (data instanceof Integer) {
+            editor.putInt(key, (Integer) data);
+        } else if (data instanceof Float) {
+            editor.putFloat(key, (Float) data);
+        } else if (data instanceof Long) {
+            editor.putLong(key, (Long) data);
+        }
+        editor.apply();
+    }
+
+    public void remove(String key){
+        mSharedPreferences.edit().remove(key).apply();
+    }
+
+    public void clear(){
+        mSharedPreferences.edit().clear().apply();
+    }
 }
