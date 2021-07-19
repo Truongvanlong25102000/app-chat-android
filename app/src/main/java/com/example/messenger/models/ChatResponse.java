@@ -2,20 +2,22 @@ package com.example.messenger.models;
 
 import com.google.firebase.database.IgnoreExtraProperties;
 
+import java.util.HashMap;
+
 @IgnoreExtraProperties
 public class ChatResponse {
     private String id;
     private String content;
-    private String file;
+    private HashMap<String, String> file;
     private String id_reader;
     private String id_sender;
     private String last_at;
 
-    public ChatResponse(){
+    public ChatResponse() {
 
     }
 
-    public ChatResponse(String id, String content, String file, String id_reader, String id_sender, String last_at) {
+    public ChatResponse(String id, String content, HashMap<String, String> file, String id_reader, String id_sender, String last_at) {
         this.id = id;
         this.content = content;
         this.file = file;
@@ -25,7 +27,7 @@ public class ChatResponse {
     }
 
 
-    public ChatResponse(String content, String file, String id_reader, String id_sender, String last_at) {
+    public ChatResponse(String content, HashMap<String, String> file, String id_reader, String id_sender, String last_at) {
         this.content = content;
         this.file = file;
         this.id_reader = id_reader;
@@ -45,7 +47,7 @@ public class ChatResponse {
         return content;
     }
 
-    public String getFile() {
+    public HashMap<String, String> getFile() {
         return file;
     }
 

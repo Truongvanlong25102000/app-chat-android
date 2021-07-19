@@ -74,9 +74,9 @@ public class SendMessagePresenter implements SendMessageContract.presenter {
     }
 
     @Override
-    public void sendMessage(String content, String idSender, String idReceiver) {
-        String pathSender = FireBaseTableKey.CHAT_KEY + idSender + "/" + idReceiver + "/" + (new Date().getTime());
-        String pathReceiver = FireBaseTableKey.CHAT_KEY + idReceiver + "/" + idSender + "/" + (new Date().getTime());
+    public void sendMessage(String content, String idSender, String idReceiver, String idChat) {
+        String pathSender = FireBaseTableKey.CHAT_KEY + idSender + "/" + idReceiver + "/" + idChat;
+        String pathReceiver = FireBaseTableKey.CHAT_KEY + idReceiver + "/" + idSender + "/" + idChat;
 
         String last_at = df.format(new Date());
         ChatResponse chatResponse = new ChatResponse(content, null, idReceiver, idSender, last_at);
@@ -91,6 +91,8 @@ public class SendMessagePresenter implements SendMessageContract.presenter {
         MessageResponse messageResponse2 = new MessageResponse(null, idSender, content, null, last_at, false);
         FireBaseController.getInstance().pushData(pathMessageLast1, messageResponse1);
         FireBaseController.getInstance().pushData(pathMessageLast2, messageResponse2);
+
+        mView.sendMessageSuccess(idSender,idReceiver,idChat);
     }
 
 }

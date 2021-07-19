@@ -27,17 +27,13 @@ public class CameraFragment extends Fragment {
     ImageView imageView;
     Button btn_open;
     public CameraFragment() {
-        // Required empty public constructor
-    }
-
+           }
     public static CameraFragment newInstance() {
         CameraFragment fragment = new CameraFragment();
         return fragment;
     }
 
     int REQUEST_CODE = 123;
-
-
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -50,14 +46,13 @@ public class CameraFragment extends Fragment {
         btn_open.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //Open Camera
                 Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
                 startActivityForResult(intent, REQUEST_CODE);
             }
         });
         return view;
     }
-
+    // Khi kết quả được trả về từ Activity khác, hàm onActivityResult sẽ được gọi.
     @Override
     public void onActivityResult(int requestCode, int resultCode, @Nullable @org.jetbrains.annotations.Nullable Intent data) {
         if(REQUEST_CODE == requestCode && resultCode == RESULT_OK && data != null){

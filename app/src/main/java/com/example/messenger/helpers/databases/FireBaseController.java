@@ -57,7 +57,7 @@ public class FireBaseController {
     }
 
     public void init() {
-        mFireBaseDatabase.setPersistenceEnabled(true);
+//        mFireBaseDatabase.setPersistenceEnabled(true);
     }
 
     public void getData(String path, RetrieveCallBack retrieveCallBack) {

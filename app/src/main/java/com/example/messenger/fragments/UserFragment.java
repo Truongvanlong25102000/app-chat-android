@@ -24,7 +24,11 @@ import android.widget.TextView;
 
 import java.net.URI;
 
+import com.bumptech.glide.Glide;
 import com.example.messenger.R;
+import com.example.messenger.helpers.commons.SharedPreferencesHelper;
+import com.example.messenger.helpers.commons.SharedPreferencesKeys;
+import com.example.messenger.helpers.databases.FireBaseController;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -47,7 +51,7 @@ public class UserFragment extends Fragment {
     Uri imageUri;
     /* IMAGE_CODE là một giá trị int dùng để định danh mỗi request.
      Khi nhận được kết quả, hàm callback sẽ trả về cùng IMAGE_CODE này để ta có thể xác định và xử lý kết quả. */
-    public static final int IMAGE_CODE=1;
+    public static final int IMAGE_CODE = 1;
 
     public UserFragment() {
         // Required empty public constructor
@@ -91,6 +95,11 @@ public class UserFragment extends Fragment {
         String Username = sharedPreferences.getString("preUsername", "");
         txtUsername.setText(Username);
         imgAvatar = (ImageView) view.findViewById(R.id.imgAvatar);
+        String thumbnail = (String) SharedPreferencesHelper.INSTANCE.get(SharedPreferencesKeys.THUMBNAIL, String.class);
+        if (thumbnail.length() > 0 && !thumbnail.equals("")) {
+            Glide.with(getContext()).load(thumbnail).into(imgAvatar);
+        }
+
         imgAvatar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -99,9 +108,9 @@ public class UserFragment extends Fragment {
                 popupMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
                     @Override
                     public boolean onMenuItemClick(MenuItem item) {
-                        if(item.getItemId()==R.id.chupAvatar){
+                        if (item.getItemId() == R.id.chupAvatar) {
 
-                        }else if(item.getItemId()==R.id.chonAvatar){
+                        } else if (item.getItemId() == R.id.chonAvatar) {
                             chonAnh();
                         }
                         return false;
@@ -123,7 +132,7 @@ public class UserFragment extends Fragment {
     @Override
     public void onActivityResult(int requestCode, int resultCode, @Nullable @org.jetbrains.annotations.Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode==IMAGE_CODE && resultCode== Activity.RESULT_OK && data!=null && data.getData()!=null){
+        if (requestCode == IMAGE_CODE && resultCode == Activity.RESULT_OK && data != null && data.getData() != null) {
             imageUri = data.getData();
             imgAvatar.setImageURI(imageUri);
         }

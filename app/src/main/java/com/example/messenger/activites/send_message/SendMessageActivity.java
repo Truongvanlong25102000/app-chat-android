@@ -1,12 +1,18 @@
 package com.example.messenger.activites.send_message;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.content.ClipData;
 import android.content.Context;
+import android.content.Intent;
+import android.database.Cursor;
+import android.net.Uri;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.View;
@@ -18,11 +24,15 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.messenger.R;
+import com.example.messenger.activites.gallery.ClosePictureHandler;
 import com.example.messenger.components.ItemClickHandler;
 import com.example.messenger.components.adapters.ChatAdapter;
+import com.example.messenger.components.adapters.GalleryAdapter;
+import com.example.messenger.components.adapters.MessagePictureAdapter;
 import com.example.messenger.helpers.commons.SharedPreferencesHelper;
 import com.example.messenger.helpers.commons.SharedPreferencesKeys;
 import com.example.messenger.helpers.databases.FireBaseTableKey;
+import com.example.messenger.helpers.storage.FirebaseStorageHelper;
 import com.example.messenger.models.AccountResponse;
 import com.example.messenger.models.ChatResponse;
 import com.example.messenger.models.MessageResponse;
@@ -35,10 +45,14 @@ import com.google.firebase.database.ValueEventListener;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Date;
 
-public class SendMessageActivity extends AppCompatActivity implements ItemClickHandler, SendMessageContract.view {
+public class SendMessageActivity extends AppCompatActivity implements ItemClickHandler, ClosePictureHandler, SendMessageContract.view {
     public static final String FRIEND_ACCOUNT_KEY = "FRIEND_ACCOUNT_KEY";
     public static final String FRIEND_MESSAGE_KEY = "FRIEND_ACCOUNT_KEY";
+
+    private static final int PICK_IMAGE = 9999;
 
     private ImageView imgBackButton, imgPhoneButton, input_message_img_picture, input_message_img_recode, input_message_img_send;
     private EditText edt_input;
@@ -52,6 +66,19 @@ public class SendMessageActivity extends AppCompatActivity implements ItemClickH
     private SendMessageContract.presenter mPresenter;
     private InputMethodManager imm;
     private Boolean isShowKeyBroad = false;
+    private RecyclerView recyclerViewPicture;
+    private GalleryAdapter galleryAdapter;
+    private ArrayList<Uri> uris = new ArrayList<>();
+    private ArrayList<Uri> baseUris = new ArrayList<>();
+    private ArrayList<String> imageEncodes = new ArrayList<>();
+    private ClosePictureHandler closePictureHandler = this;
+    private MessagePictureAdapter messagePictureAdapter;
+
+    @Override
+    public void closePicture(int position) {
+        uris.remove(position);
+        galleryAdapter.notifyDataSetChanged();
+    }
 
     private enum StateAccount {
         ONLINE("Online now"),
@@ -123,8 +150,13 @@ public class SendMessageActivity extends AppCompatActivity implements ItemClickH
 
     private void sendFileHandler() {
         input_message_img_picture.setOnClickListener(v -> {
-            BottomSheetDialogFragment bottomSheetDialogFragment = new BottomSheetDialogFragment();
-            bottomSheetDialogFragment.show(this.getSupportFragmentManager(), bottomSheetDialogFragment.getTag());
+//            BottomSheetDialogFragment bottomSheetDialogFragment = new BottomSheetDialogFragment();
+//            bottomSheetDialogFragment.show(this.getSupportFragmentManager(), bottomSheetDialogFragment.getTag());
+            Intent intent = new Intent();
+            intent.setType("image/*");
+            intent.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true);
+            intent.setAction(Intent.ACTION_GET_CONTENT);
+            startActivityForResult(Intent.createChooser(intent, "Select Picture"), PICK_IMAGE);
         });
     }
 
@@ -141,9 +173,13 @@ public class SendMessageActivity extends AppCompatActivity implements ItemClickH
             if (edt_input.getText().toString().trim().length() > 0) {
                 String idSender = (String) SharedPreferencesHelper.INSTANCE.get(SharedPreferencesKeys.ID_ACCOUNT, String.class);
                 String idReceiver = accountResponse.getId();
-
-                mPresenter.sendMessage(edt_input.getText().toString(), idSender, idReceiver);
+                String idChat = String.valueOf((new Date().getTime()));
+                mPresenter.sendMessage(edt_input.getText().toString(), idSender, idReceiver, idChat);
                 edt_input.getText().clear();
+                baseUris.clear();
+                baseUris.addAll(uris);
+                uris.clear();
+                galleryAdapter.notifyDataSetChanged();
             }
             setStateKeyBroad();
         });
@@ -194,6 +230,25 @@ public class SendMessageActivity extends AppCompatActivity implements ItemClickH
         isShowKeyBroad = false;
     }
 
+    private ArrayList<String> urls = new ArrayList<>();
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable @org.jetbrains.annotations.Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == PICK_IMAGE && resultCode == RESULT_OK && data != null) {
+            if (data.getClipData() != null) {
+                int count = data.getClipData().getItemCount(); //evaluate the count before the for loop --- otherwise, the count is evaluated every loop.
+                for (int i = 0; i < count; i++) {
+                    Uri imageUri = data.getClipData().getItemAt(i).getUri();
+                    uris.add(imageUri);
+                }
+                //do something with the image (save it to some directory or whatever you need to do with it here)
+            }
+            galleryAdapter.notifyDataSetChanged();
+            messagePictureAdapter.notifyDataSetChanged();
+        }
+    }
+
     private void initView() {
         txtNameFriendBanner = findViewById(R.id.banner_send_message_txt_name_user);
         input_message_img_picture = findViewById(R.id.input_message_img_picture);
@@ -205,13 +260,22 @@ public class SendMessageActivity extends AppCompatActivity implements ItemClickH
         imgPhoneButton = findViewById(R.id.banner_img_phone);
         edt_input = findViewById(R.id.edt_input);
         recyclerViewChat = findViewById(R.id.fragment_send_message_recycler_view);
-        chatAdapter = new ChatAdapter(SendMessageActivity.this, chatResponses, itemClickHandler, accountResponse);
+
+        messagePictureAdapter = new MessagePictureAdapter(SendMessageActivity.this, uris, urls);
+        chatAdapter = new ChatAdapter(SendMessageActivity.this, chatResponses, itemClickHandler, accountResponse,messagePictureAdapter,uris);
+
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(SendMessageActivity.this, LinearLayoutManager.VERTICAL, false);
         linearLayoutManager.setStackFromEnd(true);
         recyclerViewChat.setLayoutManager(linearLayoutManager);
         recyclerViewChat.setAdapter(chatAdapter);
         mPresenter = new SendMessagePresenter(this);
         imm = (InputMethodManager) this.getSystemService(Context.INPUT_METHOD_SERVICE);
+        recyclerViewPicture = findViewById(R.id.recycler_view_picture);
+        galleryAdapter = new GalleryAdapter(SendMessageActivity.this, uris, closePictureHandler);
+        LinearLayoutManager linearLayoutManager1 = new LinearLayoutManager(SendMessageActivity.this, LinearLayoutManager.HORIZONTAL, false);
+        recyclerViewPicture.setLayoutManager(linearLayoutManager1);
+        recyclerViewPicture.setAdapter(galleryAdapter);
+
     }
 
     @Override
@@ -250,10 +314,26 @@ public class SendMessageActivity extends AppCompatActivity implements ItemClickH
     }
 
     @Override
-    public void sendMessageSuccess() {
+    public void sendMessageSuccess(String idSender, String idReceiver, String idChat) {
         recyclerViewChat.scrollToPosition(chatResponses.size() - 1);
         chatAdapter.notifyItemInserted(chatResponses.size() - 1);
-        Toast.makeText(SendMessageActivity.this, "Success", Toast.LENGTH_SHORT).show();
+        uploadFile(idSender, idReceiver, idChat);
+    }
+
+    private void uploadFile(String idSender, String idReceiver, String idChat) {
+        FirebaseStorageHelper.getInstance().upLoadFile(uris, idSender, idReceiver, idChat, new FirebaseStorageHelper.UploadFileCallBack() {
+            @Override
+            public void uploadFileSuccess(String idSender, String idReceiver, String idChat, String urlImage) {
+                String pathSender = FireBaseTableKey.CHAT_KEY + idSender + "/" + idReceiver;
+                String pathReceiver = FireBaseTableKey.CHAT_KEY + idReceiver + "/" + idSender;
+                FirebaseDatabase.getInstance().getReference(pathSender).child(idChat).child("file").child(idChat).setValue(urlImage);
+                FirebaseDatabase.getInstance().getReference(pathReceiver).child(idChat).child("file").child(idChat).setValue(urlImage);
+            }
+
+            @Override
+            public void uploadFileFail() {
+            }
+        });
     }
 
     @Override
