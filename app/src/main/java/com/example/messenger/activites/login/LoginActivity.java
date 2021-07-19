@@ -82,6 +82,8 @@ public class LoginActivity extends AppCompatActivity {
                         FirebaseDatabase.getInstance().getReference("Account").child(userName).child("state").setValue(1);
                         SharedPreferencesHelper.INSTANCE.put(SharedPreferencesKeys.ID_ACCOUNT, userName);
                         SharedPreferencesHelper.INSTANCE.put(SharedPreferencesKeys.PASS_WORD_ACCOUNT, passWord);
+                        SharedPreferencesHelper.INSTANCE.put(SharedPreferencesKeys.THUMBNAIL, "https://afamilycdn.com/150157425591193600/2021/2/17/4-nguoi-ton-ngo-khong-so-nhat-trong-tay-du-ky-gom-nhung-ai1-aeub-1613533973120733625078.jpg");
+
                         Intent intent = new Intent(LoginActivity.this, MainActivity.class);
                         startActivity(intent);
                         finish();
