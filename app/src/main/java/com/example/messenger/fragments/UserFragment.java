@@ -14,6 +14,7 @@ import androidx.fragment.app.FragmentActivity;
 import android.preference.Preference;
 import android.preference.PreferenceFragment;
 import android.preference.PreferenceManager;
+import android.view.InflateException;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
@@ -21,6 +22,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.PopupMenu;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.net.URI;
 
@@ -41,6 +43,7 @@ public class UserFragment extends Fragment {
     // TODO: Rename and change types of parameters
     private String mParam1;
     private String mParam2;
+    private static View view;
 
     TextView txtUsername;
     ImageView imgAvatar;
@@ -85,32 +88,44 @@ public class UserFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        View view = inflater.inflate(R.layout.fragment_user, container, false);
-        txtUsername = (TextView) view.findViewById(R.id.txtUsername);
-        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getActivity().getApplicationContext());
-        String Username = sharedPreferences.getString("preUsername", "");
-        txtUsername.setText(Username);
-        imgAvatar = (ImageView) view.findViewById(R.id.imgAvatar);
-        imgAvatar.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                PopupMenu popupMenu = new PopupMenu(getActivity(), imgAvatar);
-                popupMenu.getMenuInflater().inflate(R.menu.avatar_menu, popupMenu.getMenu());
-                popupMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
-                    @Override
-                    public boolean onMenuItemClick(MenuItem item) {
-                        if(item.getItemId()==R.id.chupAvatar){
-
-                        }else if(item.getItemId()==R.id.chonAvatar){
-                            chonAnh();
-                        }
-                        return false;
-                    }
-                });
-                popupMenu.show();
+        if (view != null) {
+            ViewGroup parent = (ViewGroup) view.getParent();
+            if (parent != null) {
+                parent.removeView(view);
             }
-        });
 
+        }
+        try {
+
+
+            view = inflater.inflate(R.layout.fragment_user, container, false);
+            txtUsername = (TextView) view.findViewById(R.id.txtUsername);
+            SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getActivity().getApplicationContext());
+            String Username = sharedPreferences.getString("preUsername", "");
+            txtUsername.setText(Username);
+            imgAvatar = (ImageView) view.findViewById(R.id.imgAvatar);
+            imgAvatar.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    PopupMenu popupMenu = new PopupMenu(getActivity(), imgAvatar);
+                    popupMenu.getMenuInflater().inflate(R.menu.avatar_menu, popupMenu.getMenu());
+                    popupMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
+                        @Override
+                        public boolean onMenuItemClick(MenuItem item) {
+                            if (item.getItemId() == R.id.chupAvatar) {
+
+                            } else if (item.getItemId() == R.id.chonAvatar) {
+                                chonAnh();
+                            }
+                            return false;
+                        }
+                    });
+                    popupMenu.show();
+                }
+            });
+        } catch (InflateException e) {
+
+        }
         return view;
     }
 

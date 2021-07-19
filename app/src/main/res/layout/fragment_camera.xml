@@ -22,4 +22,4 @@
         android:layout_marginBottom="50dp"
         tools:ignore="HardcodedText" />
 
-</LinearLayout>
+</FrameLayout>
