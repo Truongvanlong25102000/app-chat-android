@@ -39,5 +39,9 @@
             android:title="Địa chỉ email"
             android:dialogTitle="Thay đổi địa chỉ email"
             android:summary="usename@email.com"/>
+
+        <Preference
+            android:key="preLogout"
+            android:title="Đăng xuất"/>
     </PreferenceCategory>
 </PreferenceScreen>
