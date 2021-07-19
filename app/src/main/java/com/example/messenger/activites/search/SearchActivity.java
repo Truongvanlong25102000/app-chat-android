@@ -50,7 +50,7 @@ public class SearchActivity extends AppCompatActivity {
         }
     }
 
-    private void getData() throws Exception{
+    private void getData() throws Exception {
         String userName = (String) SharedPreferencesHelper.INSTANCE.get(SharedPreferencesKeys.ID_ACCOUNT, String.class);
         FireBaseController.getInstance().getData(FireBaseTableKey.ACCOUNT_KEY + userName, new FireBaseController.RetrieveCallBack() {
             @Override
@@ -95,6 +95,7 @@ public class SearchActivity extends AppCompatActivity {
                         accountResponses.add(accountResponse);
 
                         if (accountResponses.size() == friendIds.size()) {
+                            currentAccountResponses.addAll(accountResponses);
                             searchAdapter.notifyDataSetChanged();
                         }
                     }
