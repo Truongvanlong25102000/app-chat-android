@@ -89,8 +89,9 @@ public class LoginActivity extends AppCompatActivity {
                                 if (data.exists()) {
                                     try {
                                         AccountResponse accountResponse = data.getValue(AccountResponse.class);
-                                        if(accountResponse.getThumbnail()!=null){
+                                        if (accountResponse.getThumbnail() != null) {
                                             SharedPreferencesHelper.INSTANCE.put(SharedPreferencesKeys.THUMBNAIL, accountResponse.getThumbnail());
+                                            SharedPreferencesHelper.INSTANCE.put(SharedPreferencesKeys.PHONE, accountResponse.getPhone());
                                         }
                                     } catch (Exception e) {
 

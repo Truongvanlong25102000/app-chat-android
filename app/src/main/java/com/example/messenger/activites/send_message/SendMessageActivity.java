@@ -146,6 +146,22 @@ public class SendMessageActivity extends AppCompatActivity implements ItemClickH
         textInputListener();
         sendMessageHandler();
         sendFileHandler();
+        call();
+    }
+
+    private void call() {
+        imgPhoneButton.setOnClickListener(v -> {
+            String phone = (String) SharedPreferencesHelper.INSTANCE.get(SharedPreferencesKeys.PHONE, String.class);
+            if (phone.equals("")) {
+                Toast.makeText(SendMessageActivity.this, "Phone does not exit", Toast.LENGTH_SHORT).show();
+            } else {
+                Intent intent = new Intent(Intent.ACTION_CALL);
+
+                intent.setData(Uri.parse("tel:" + phone));
+                startActivity(intent);
+            }
+
+        });
     }
 
     private void sendFileHandler() {
@@ -262,7 +278,7 @@ public class SendMessageActivity extends AppCompatActivity implements ItemClickH
         recyclerViewChat = findViewById(R.id.fragment_send_message_recycler_view);
 
         messagePictureAdapter = new MessagePictureAdapter(SendMessageActivity.this, uris, urls);
-        chatAdapter = new ChatAdapter(SendMessageActivity.this, chatResponses, itemClickHandler, accountResponse,messagePictureAdapter,uris);
+        chatAdapter = new ChatAdapter(SendMessageActivity.this, chatResponses, itemClickHandler, accountResponse, messagePictureAdapter, uris);
 
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(SendMessageActivity.this, LinearLayoutManager.VERTICAL, false);
         linearLayoutManager.setStackFromEnd(true);

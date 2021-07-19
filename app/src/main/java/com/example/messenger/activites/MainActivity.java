@@ -13,7 +13,10 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.example.messenger.R;
+import com.example.messenger.activites.login.LoginActivity;
 import com.example.messenger.activites.search.SearchActivity;
+import com.example.messenger.helpers.commons.SharedPreferencesHelper;
+import com.example.messenger.helpers.commons.SharedPreferencesKeys;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 public class MainActivity extends AppCompatActivity {
@@ -28,6 +31,11 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        String userName = (String) SharedPreferencesHelper.INSTANCE.get(SharedPreferencesKeys.ID_ACCOUNT, String.class);
+        if (userName.equals("")) {
+            startActivity(new Intent(MainActivity.this, LoginActivity.class));
+            finish();
+        }
         initView();
         initEvent();
     }
